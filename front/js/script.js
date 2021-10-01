@@ -1,5 +1,5 @@
 async function appelProduit() { // fonction asyncrone  qui permet d'appeler les produits
-    return fetch("http://localhost:3000/api/teddies")
+    return fetch("http://localhost:3000/api/products")
         .then(function(apiResponse) { // Creation d'une promesse  dans une fonction  pour retourner la valeur en json
             return apiResponse.json()
         })
@@ -9,7 +9,7 @@ async function appelProduit() { // fonction asyncrone  qui permet d'appeler les 
 }
 
 function afficherProduit(articles) { // création d'une fonction afin d'afficher les produits
-    const template = document.querySelector("template");
+    const template = document.querySelector("article");
     const clone = document.importNode(template.content, true);
 
     clone.querySelector(".produit img").setAttribute("src", articles.imageUrl); // Création des clones de chaques élements afin de les appeler 

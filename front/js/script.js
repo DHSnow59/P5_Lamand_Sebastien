@@ -17,7 +17,7 @@ function afficherProduit(articles) { // création d'une fonction afin d'afficher
     clone.querySelector(".prix").textContent = articles.price / 100 + "€";
     clone.querySelector(".btnproduit").setAttribute("href", "produit.html?id=" + articles._id);
 
-    document.querySelector("main").appendChild(clone);
+    document.querySelector("section").appendChild(clone);
 
 }
 

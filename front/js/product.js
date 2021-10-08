@@ -84,23 +84,50 @@ function ajoutEvent() {
         //Mettre le choix de l'utilisateur dans une variable
         let choixForm = idForm.value;
 
-        //Récupération des valeurs du formulaire
-        let optionsProduit = {
-            name: document.getElementById("title").textContent,
-            id: document.getElementById("idProduit").value,
-            colors: document.getElementById("colors").value,
-            quantity: document.getElementById("quantity").value,
-            price: document.getElementById("price").textContent,
-        };
-        //Stocker les saisies dans le local storage
-        localStorage.setItem("ProduitImage", `${produit.imageUrl}`);
-        localStorage.setItem("NomProduit", `${produit.name}`);
-        localStorage.setItem("PrixProduit", `${produit.price}`);
-        localStorage.setItem("DescriptionProduit", `${produit.description}`);
-        localStorage.setItem("CouleurProduit", document.querySelector("#colors").value);
-        localStorage.setItem("NombreProduit", document.querySelector("#quantity").value);
+        // Vérification de la quantité saisi par l'utilisateur 
+        if (document.getElementById("quantity").value > 0) {
+            //Récupération des valeurs du formulaire
+            let optionsProduit = {
+                name: document.getElementById("title").textContent,
+                id: document.getElementById("idProduit").value,
+                colors: document.getElementById("colors").value,
+                quantity: document.getElementById("quantity").value,
+                price: document.getElementById("price").textContent,
+            };
 
-        console.log(optionsProduit);
+            // recuperation du tableau des produits déja présent dans le localStorage
+            let tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
 
+            //fonction d'apparation d'un popup 
+            function popupConfirmation() {
+                if (alert(`${produit.name} couleur: ${color} a bien eté ajouté au panier, pour consulter le panier 
+            appuyer sur OK ou sur ANNULER pour retourner a l'accueil.`)) {
+                    window.location.href = "./panier.html";
+                } else {
+                    window.location.href = "./index.html";
+                }
+            };
+
+            //Verification si le localStorage retourne du vide
+            if (!tableauDesProduits || tableauDesProduits == 0) {
+                // Si rien n'est retourné du localStorage on initialise le tableau des produits avec un tableau vide
+                tableauDesProduits = [];
+                popupConfirmation();
+            } else {
+                /*Si un tableau est retourné du localstorage, on filtre les donnée de ce tableau: retirer si il est deja 
+                présent, le produit que nous voulons ajouter dans le localStorage (panier)*/
+                tableauDesProduits = tableauDesProduits.filter(produit => produit.id !== optionsProduit.id);
+                popupConfirmation();
+            }
+            // finalement on ajoute le produit dans le tableau des produits deja presents
+            tableauDesProduits.push(optionsProduit);
+            // on envoit vers le localstorage le tableau des produits selectionnés
+            localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
+
+            // ici il va devoir faire le popup de redirection soit au panier soit au menu principal
+
+        } else {
+            alert("La Quantité de produit doit etre strictement supérieur à zéro");
+        }
     });
 }

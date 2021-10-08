@@ -70,7 +70,6 @@ promesse.then(async(response) => {
 //La récupération des donnés sélectionées par l'utilisateur
 
 function ajoutEvent() {
-
     //Sélection de l'id du formulaire
     const idForm = document.querySelector("#colors");
 
@@ -93,6 +92,15 @@ function ajoutEvent() {
             quantity: document.getElementById("quantity").value,
             price: document.getElementById("price").textContent,
         };
+        //Stocker les saisies dans le local storage
+        localStorage.setItem("ProduitImage", `${produit.imageUrl}`);
+        localStorage.setItem("NomProduit", `${produit.name}`);
+        localStorage.setItem("PrixProduit", `${produit.price}`);
+        localStorage.setItem("DescriptionProduit", `${produit.description}`);
+        localStorage.setItem("CouleurProduit", document.querySelector("#colors").value);
+        localStorage.setItem("NombreProduit", document.querySelector("#quantity").value);
+
         console.log(optionsProduit);
+
     });
 }

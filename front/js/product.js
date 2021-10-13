@@ -93,6 +93,7 @@ function ajoutEvent() {
                 colors: document.getElementById("colors").value,
                 quantity: document.getElementById("quantity").value,
                 price: document.getElementById("price").textContent,
+                img: document.querySelector(".item__img > img").getAttribute("src"),
             };
 
             // recuperation du tableau des produits déja présent dans le localStorage

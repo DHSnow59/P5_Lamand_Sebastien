@@ -17,7 +17,7 @@ function afficherProduit(articles, premier) { // création d'une fonction afin d
     }
     clone.querySelector(".produit img").setAttribute("src", articles.imageUrl); // Création des clones de chaques élements afin de les appeler 
     clone.querySelector(".nom").textContent = articles.name;
-    clone.querySelector(".prix").textContent = articles.price / 100 + "€";
+    clone.querySelector(".prix").textContent = articles.price + "€";
     clone.querySelector(".productDescription").textContent = articles.description;
     clone.setAttribute("href", "./product.html?id=" + articles._id);
 

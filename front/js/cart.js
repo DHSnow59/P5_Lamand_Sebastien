@@ -18,7 +18,7 @@ if (tableauDesProduits === null) {
     //Si le panier n'est pas vide : afficher ce qui a dans le panier
     for (i = 0; i < tableauDesProduits.length; i++) {
         positionElement2.innerHTML += `
-   <article class="cart__item" data-id="${tableauDesProduits[i]._id}">
+   <article class="cart__item" data-id="${tableauDesProduits[i].id}">
    <div class="cart__item__img">
      <img src="${tableauDesProduits[i].img}" alt="Photographie d'un canapé">
    </div>
@@ -54,11 +54,11 @@ for (let g = 0; g < btnSupprimer.length; g++) {
         event.preventDefault();
 
         //sélection de l'id du produit qui va etre supprimer en cliquant sur le bouton
-        let idSelectionnerSuppresion = tableauDesProduits.id;
+        let idSelectionnerSuppresion = tableauDesProduits[g].id;
+        console.log("Je suis ici " + idSelectionnerSuppresion);
 
         //on utilise la methode filter pour selectionner la méthode a garder et supprimer l'élément ou le bouton a été cliqué 
-        tableauDesProduits = tableauDesProduits.filter(element => element.id !== id);
-        console.log(tableauDesProduits);
+        tableauDesProduits = tableauDesProduits.filter(element => element.id !== idSelectionnerSuppresion);
 
         // on envoit vers le localstorage le tableau des produits selectionnés
         localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));

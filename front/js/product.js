@@ -99,11 +99,11 @@ function ajoutEvent() {
             // recuperation du tableau des produits déja présent dans le localStorage
             let tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
 
-            //fonction d'apparation d'un popup 
+            //fonction d'apparition d'un popup 
             function popupConfirmation() {
-                if (alert(`${produit.name} couleur: ${color} a bien eté ajouté au panier, pour consulter le panier 
+                if (confirm(`${produit.name} couleur: ${color} a bien eté ajouté au panier, pour consulter le panier 
             appuyer sur OK ou sur ANNULER pour retourner a l'accueil.`)) {
-                    window.location.href = "./panier.html";
+                    window.location.href = "./cart.html";
                 } else {
                     window.location.href = "./index.html";
                 }
@@ -113,17 +113,19 @@ function ajoutEvent() {
             if (!tableauDesProduits || tableauDesProduits == 0) {
                 // Si rien n'est retourné du localStorage on initialise le tableau des produits avec un tableau vide
                 tableauDesProduits = [];
-                popupConfirmation();
+
             } else {
                 /*Si un tableau est retourné du localstorage, on filtre les donnée de ce tableau: retirer si il est deja 
                 présent, le produit que nous voulons ajouter dans le localStorage (panier)*/
                 tableauDesProduits = tableauDesProduits.filter(produit => produit.id !== optionsProduit.id);
-                popupConfirmation();
+
             }
             // finalement on ajoute le produit dans le tableau des produits deja presents
             tableauDesProduits.push(optionsProduit);
             // on envoit vers le localstorage le tableau des produits selectionnés
             localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
+            //Appel du PopUp
+            popupConfirmation();
 
             // ici il va devoir faire le popup de redirection soit au panier soit au menu principal
 

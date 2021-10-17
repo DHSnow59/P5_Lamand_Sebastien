@@ -1,8 +1,7 @@
 // recuperation du tableau des produits déja présent dans le localStorage
 let tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
-console.log(tableauDesProduits);
 
-//--------------------------L4AFFICHAGE DES PRODUITS DU PANIER-----------------------
+//--------------------------L'AFFICHAGE DES PRODUITS DU PANIER-----------------------
 //Sélection de la classe ou je vais injecter le code html 
 const positionElement2 = document.querySelector("#cart__items");
 //console.log(positionElement2);
@@ -39,15 +38,13 @@ if (tableauDesProduits === null) {
    </div>
  </article> 
    `;
-        console.log(tableauDesProduits.length);
     }
 }
 
 //---------------------------------------Gestion du boutton supprimer l'article--------------------------------
 
 //Sélection des références de tous les boutons 
-let btnSupprimer = document.querySelector(".deleteItem");
-console.log(btnSupprimer);
+let btnSupprimer = document.querySelectorAll(".deleteItem");
 
 for (let g = 0; g < btnSupprimer.length; g++) {
     btnSupprimer[g].addEventListener("click", (event) => {
@@ -55,7 +52,6 @@ for (let g = 0; g < btnSupprimer.length; g++) {
 
         //sélection de l'id du produit qui va etre supprimer en cliquant sur le bouton
         let idSelectionnerSuppresion = tableauDesProduits[g].id;
-        console.log("Je suis ici " + idSelectionnerSuppresion);
 
         //on utilise la methode filter pour selectionner la méthode a garder et supprimer l'élément ou le bouton a été cliqué 
         tableauDesProduits = tableauDesProduits.filter(element => element.id !== idSelectionnerSuppresion);
@@ -64,7 +60,7 @@ for (let g = 0; g < btnSupprimer.length; g++) {
         localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
 
         alert("Ce produit a été supprimer du panier");
-        window.location.href = "panier.html";
+        window.location.href = "cart.html";
     })
 }
 
@@ -78,8 +74,6 @@ for (let m = 0; m < tableauDesProduits.length; m++) {
 
     //Mettre les prix du panier dans la variable "prixTotalCalcul"
     prixTotalCalcul.push(prixProduitPanier)
-
-    console.log(prixTotalCalcul);
 }
 
 //Additionner les prix qu'il y a dans le tableau de la variable "prixTotalCalcul" avec la methode .reduce
@@ -107,51 +101,46 @@ console.log(affichagePrixDom);*/
 
 //--------------------------------Fin montant panier-----------------------------------------
 
+
 //----------------------Formulaire de commande-------------------------------
 
-function afficherFormulaireHtml() {
-    //Sélection élèment du DOM pour le positionnement 
-    const positionElement4 = document.querySelector(".cart__order");
-
-    //injection HTML
-    positionElement4.innerHTML = `
-    <form method="get" class="cart__order__form">
-        <div class="cart__order__form__question">
-            <label for="firstName">Prénom: </label>
-            <input type="text" name="firstName" id="firstName" required>
-            <p id="firstNameErrorMsg">
-                <!-- ci est un message d'erreur -->
-            </p>
-        </div>
-        <div class="cart__order__form__question">
-            <label for="lastName">Nom: </label>
-            <input type="text" name="lastName" id="lastName" required>
-            <p id="lastNameErrorMsg"></p>
-        </div>
-        <div class="cart__order__form__question">
-            <label for="address">Adresse: </label>
-            <input type="text" name="address" id="address" required>
-            <p id="addressErrorMsg"></p>
-        </div>
-        <div class="cart__order__form__question">
-            <label for="city">Ville: </label>
-            <input type="text" name="city" id="city" required>
-            <p id="cityErrorMsg"></p>
-        </div>
-        <div class="cart__order__form__question">
-            <label for="email">Email: </label>
-            <input type="email" name="email" id="email" required>
-            <p id="emailErrorMsg"></p>
-        </div>
-        <div class="cart__order__form__submit">
-            <input type="submit" value="Commander !" id="order">
-        </div>
-    </form>
-  `;
+let bouttonformu = document.querySelector("#order");
+//Création d'un event sur le bouton formulaire lors du click de l'utilisateur
+bouttonformu.addEventListener("click", (event) => {
+    event.preventDefault();
+    // Controle des valeurs des champs avant récupération
+    if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#firstName").value)) {
+        if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#lastName").value)) {
+            console.log("OK 1");
+            if (/^[A-zÀ-ú\s\-0-9]{3,50}$/.test(document.querySelector("#address").value)) {
+                console.log("OK 2");
+                if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#city").value)) {
+                    console.log("OK 3");
+                    if (/^[A-z0-9\-]{3,20}@[A-z\-]{3,10}\.[A-z]{2,6}$/.test(document.querySelector("#email").value)) {
+                        console.log("OK 4");
+                        const formulairesValues = {
+                            prenom: document.querySelector("#firstName").value,
+                            nom: document.querySelector("#lastName").value,
+                            adresse: document.querySelector("#address").value,
+                            ville: document.querySelector("#city").value,
+                            email: document.querySelector("#email").value
+                        }
+                    } else {
+                        console.log("Email invalide, merci de respecter le format suivant : votre@adresse.email");
+                    }
+                } else {
+                    console.log("Ville invalide, merci de respecter le format suivant : Nom de votre ville");
+                }
+            } else {
+                console.log("Adresse invalide, merci de respecter le format suivant (les infos entre parenthèses sont facultatives) : (Etage 0 Batiment 0) 0 nom de votre rue");
+            }
+        } else {
+            console.log("Nom invalide, merci de respecter le format suivant : Votre nom de famille");
+        }
+    } else {
+        console.log("Prénom invalide, merci de respecter le format suivant : Votre prénom");
+    }
 
 
-    // positionElement4.insertAdjacentElement("afterend", structureFormulaire);
-}
 
-//Affichage du formulaire
-afficherFormulaireHtml();
+});

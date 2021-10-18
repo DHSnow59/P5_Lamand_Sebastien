@@ -108,7 +108,7 @@ let bouttonformu = document.querySelector("#order");
 //Création d'un event sur le bouton formulaire lors du click de l'utilisateur
 bouttonformu.addEventListener("click", (event) => {
     event.preventDefault();
-    // Controle des valeurs des champs avant récupération
+    // Controle des valeurs des champs avec REGEX avant récupération 
     if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#firstName").value)) {
         if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#lastName").value)) {
             console.log("OK 1");
@@ -125,20 +125,21 @@ bouttonformu.addEventListener("click", (event) => {
                             ville: document.querySelector("#city").value,
                             email: document.querySelector("#email").value
                         }
+                        console.log(formulairesValues);
                     } else {
-                        console.log("Email invalide, merci de respecter le format suivant : votre@adresse.email");
+                        document.getElementById('emailErrorMsg').innerHTML = "Email invalide, merci de respecter le format suivant : votre@adresse.email";
                     }
                 } else {
-                    console.log("Ville invalide, merci de respecter le format suivant : Nom de votre ville");
+                    document.getElementById('cityErrorMsg').innerHTML = "Ville invalide, merci de respecter le format suivant : Nom de votre ville";
                 }
             } else {
-                console.log("Adresse invalide, merci de respecter le format suivant (les infos entre parenthèses sont facultatives) : (Etage 0 Batiment 0) 0 nom de votre rue");
+                document.getElementById('addressErrorMsg').innerHTML = "Adresse invalide, merci de respecter le format suivant (les infos entre parenthèses sont facultatives) : (Etage 0 Batiment 0) 0 nom de votre rue";
             }
         } else {
-            console.log("Nom invalide, merci de respecter le format suivant : Votre nom de famille");
+            document.getElementById('lastNameErrorMsg').innerHTML = "Nom invalide, merci de respecter le format suivant : Votre nom de famille";
         }
     } else {
-        console.log("Prénom invalide, merci de respecter le format suivant : Votre prénom");
+        document.getElementById('firstNameErrorMsg').innerHTML = "Prénom invalide, merci de respecter le format suivant : Votre prénom";
     }
 
 

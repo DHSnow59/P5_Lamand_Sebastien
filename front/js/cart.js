@@ -136,45 +136,49 @@ bouttonformu.addEventListener("click", (event) => {
 
                         // Récupération du local storage
                         const array = JSON.parse(localStorage.getItem(localStorage.key("allProducts")));
-                        const productId = []
-                            // création d'une boucle for pour trier les Id du local storage 
-                        for (let e = 0; e < localStorage.length; e++) {
-                            productId[e] = array[e].id;
+                        if (array === null || array.length == 0) {
+                            alert('Votre panier est vide');
+                        } else {
+                            const productId = []
+                                // création d'une boucle for pour trier les Id du local storage 
+                            for (let e = 0; e < localStorage.length; e++) {
+                                productId[e] = array[e].id;
+                            }
+
+
+                            // Récuparation des valeurs du formulaire                         
+                            const bodyorder = {
+                                contact: {
+                                    firstName: document.querySelector("#firstName").value,
+                                    lastName: document.querySelector("#lastName").value,
+                                    address: document.querySelector("#address").value,
+                                    city: document.querySelector("#city").value,
+                                    email: document.querySelector("#email").value,
+                                },
+                                products: productId,
+                            };
+
+                            // options de fetch
+                            const options = {
+                                method: 'POST',
+                                body: JSON.stringify(bodyorder),
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                            };
+
+                            // Envoie de la requête
+                            fetch("http://localhost:3000/api/products/order", options)
+                                .then(res => res.json())
+                                .then(function(data) {
+                                    localStorage.clear();
+                                    localStorage.setItem("orderId", data.orderId);
+                                    window.location.href = "confirmation.html";
+                                })
+                                .catch(function(err) {
+                                    alert('Il y a eu un problème avec l\'opération fetch: ' + err.message);
+                                });
                         }
-
-                        // Récuparation des valeurs du formulaire                         
-                        const bodyorder = {
-                            contact: {
-                                firstName: document.querySelector("#firstName").value,
-                                lastName: document.querySelector("#lastName").value,
-                                address: document.querySelector("#address").value,
-                                city: document.querySelector("#city").value,
-                                email: document.querySelector("#email").value,
-                            },
-                            products: productId,
-
-                        };
-
-                        // options de fetch
-                        const options = {
-                            method: 'POST',
-                            body: JSON.stringify(bodyorder),
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                        };
-
-                        // Envoie de la requête
-                        fetch("http://localhost:3000/api/products/order", options)
-                            .then(res => res.json())
-                            .then(function(data) {
-                                localStorage.clear();
-                                localStorage.setItem("orderId", data.orderId);
-                                window.location.href = "confirmation.html";
-                            })
-                            .catch(function(err) {
-                                alert('Il y a eu un problème avec l\'opération fetch: ' + err.message);
-                            });
                     } else {
                         document.getElementById('emailErrorMsg').innerHTML = "Email invalide, merci de respecter le format suivant : votre@adresse.email";
                     }

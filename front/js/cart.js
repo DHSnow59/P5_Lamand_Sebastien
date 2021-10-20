@@ -6,8 +6,8 @@ let tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
 const positionElement2 = document.querySelector("#cart__items");
 //console.log(positionElement2);
 
-//si le panier est vide : afficher le panier est vide
-if (tableauDesProduits === null) {
+//si le panier est vide  : afficher le panier est vide
+if (tableauDesProduits === null || tableauDesProduits.length == 0) {
     const panierVide = `
     <div class"container-panier-vide">
         <div> le panier est vide </div>
@@ -83,7 +83,7 @@ function reducer(accumulator, currentValue) {
     return parse;
 }
 let prixTotal = prixTotalCalcul.reduce(reducer);
-console.log(prixTotal);
+
 
 //Sélection de la classe ou je vais injecter le code html 
 const positionElement3 = document.querySelector(".cart__price");
@@ -110,22 +110,56 @@ bouttonformu.addEventListener("click", (event) => {
     event.preventDefault();
     // Controle des valeurs des champs avec REGEX avant récupération 
     if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#firstName").value)) {
+
         if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#lastName").value)) {
-            console.log("OK 1");
+
             if (/^[A-zÀ-ú\s\-0-9]{3,50}$/.test(document.querySelector("#address").value)) {
-                console.log("OK 2");
+
                 if (/^[A-zÀ-ú\s\-]{3,20}$/.test(document.querySelector("#city").value)) {
-                    console.log("OK 3");
+
                     if (/^[A-z0-9\-]{3,20}@[A-z\-]{3,10}\.[A-z]{2,6}$/.test(document.querySelector("#email").value)) {
-                        console.log("OK 4");
-                        const formulairesValues = {
-                            prenom: document.querySelector("#firstName").value,
-                            nom: document.querySelector("#lastName").value,
-                            adresse: document.querySelector("#address").value,
-                            ville: document.querySelector("#city").value,
-                            email: document.querySelector("#email").value
+
+                        // Récupération du local storage
+                        const array = JSON.parse(localStorage.getItem(localStorage.key("allProducts")));
+                        const productId = []
+                            // création d'une boucle for pour trier les Id du local storage 
+                        for (let e = 0; e < localStorage.length; e++) {
+                            productId[e] = array[e].id;
                         }
-                        console.log(formulairesValues);
+
+                        // Récuparation des valeurs du formulaire                         
+                        const bodyorder = {
+                            contact: {
+                                firstName: document.querySelector("#firstName").value,
+                                lastName: document.querySelector("#lastName").value,
+                                address: document.querySelector("#address").value,
+                                city: document.querySelector("#city").value,
+                                email: document.querySelector("#email").value,
+                            },
+                            products: productId,
+
+                        };
+
+                        // options de fetch
+                        const options = {
+                            method: 'POST',
+                            body: JSON.stringify(bodyorder),
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                        };
+
+                        // Envoie de la requête
+                        fetch("http://localhost:3000/api/products/order", options)
+                            .then(res => res.json())
+                            .then(function(data) {
+                                localStorage.clear();
+                                localStorage.setItem("orderId", data.orderId);
+                                window.location.href = "confirmation.html";
+                            })
+                            .catch(function(err) {
+                                alert('Il y a eu un problème avec l\'opération fetch: ' + err.message);
+                            });
                     } else {
                         document.getElementById('emailErrorMsg').innerHTML = "Email invalide, merci de respecter le format suivant : votre@adresse.email";
                     }
@@ -141,7 +175,4 @@ bouttonformu.addEventListener("click", (event) => {
     } else {
         document.getElementById('firstNameErrorMsg').innerHTML = "Prénom invalide, merci de respecter le format suivant : Votre prénom";
     }
-
-
-
 });

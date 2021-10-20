@@ -109,19 +109,26 @@ function ajoutEvent() {
                 }
             };
 
-            //Verification si le localStorage retourne du vide
+            // Par défaut, le tableau des produits n'est pas mis à jour
+            let isUpdated = false;
+            // Verification si le localStorage retourne du vide
             if (!tableauDesProduits || tableauDesProduits == 0) {
                 // Si rien n'est retourné du localStorage on initialise le tableau des produits avec un tableau vide
                 tableauDesProduits = [];
-
             } else {
-                /*Si un tableau est retourné du localstorage, on filtre les donnée de ce tableau: retirer si il est deja 
-                présent, le produit que nous voulons ajouter dans le localStorage (panier)*/
-                tableauDesProduits = tableauDesProduits.filter(produit => produit.id !== optionsProduit.id);
-
+                /* Si un tableau est retourné du localstorage, on vérifie si le couple id/colors est déjà présent dans le tableau des produits.
+                   Si oui, on met à jour la quantité dans le tableau des produits */
+                tableauDesProduits.forEach((element, index, array) => {
+                    if (array[index].id === optionsProduit.id && array[index].colors === optionsProduit.colors) {
+                        array[index].quantity = parseInt(array[index].quantity) + parseInt(optionsProduit.quantity);
+                        isUpdated = true;
+                    }
+                });
             }
-            // finalement on ajoute le produit dans le tableau des produits deja presents
-            tableauDesProduits.push(optionsProduit);
+            // On ajoute le produit dans le tableau des produits deja presents si aucune mise à jour n'a été effectuée
+            if (!isUpdated) {
+                tableauDesProduits.push(optionsProduit);
+            }
             // on envoit vers le localstorage le tableau des produits selectionnés
             localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
             //Appel du PopUp

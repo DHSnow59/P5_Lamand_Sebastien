@@ -26,6 +26,9 @@ if (tableauDesProduits === null || tableauDesProduits.length == 0) {
        <h2>${tableauDesProduits[i].name} </h2>
        <p> ${tableauDesProduits[i].price} € </p>
      </div>
+     <div>
+        <p>Couleur : ${tableauDesProduits[i].colors}</p>
+     </div>
      <div class="cart__item__content__settings">
        <div class="cart__item__content__settings__quantity">
          <p>Qté :  </p>
@@ -50,11 +53,13 @@ for (let g = 0; g < btnSupprimer.length; g++) {
     btnSupprimer[g].addEventListener("click", (event) => {
         event.preventDefault();
 
-        //sélection de l'id du produit qui va etre supprimer en cliquant sur le bouton
-        let idSelectionnerSuppresion = tableauDesProduits[g].id;
+        //sélection de l'id et de la couleur du produit qui va etre supprimer en cliquant sur le bouton
+        let idSelectionnerSuppression = tableauDesProduits[g].id;
+        let colorSelectionnerSuppression = tableauDesProduits[g].colors;
 
         //on utilise la methode filter pour selectionner la méthode a garder et supprimer l'élément ou le bouton a été cliqué 
-        tableauDesProduits = tableauDesProduits.filter(element => element.id !== idSelectionnerSuppresion);
+        tableauDesProduits = tableauDesProduits.filter(element =>
+            element.id !== idSelectionnerSuppression || element.colors !== colorSelectionnerSuppression);
 
         // on envoit vers le localstorage le tableau des produits selectionnés
         localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
@@ -64,26 +69,40 @@ for (let g = 0; g < btnSupprimer.length; g++) {
     })
 }
 
-//-----------------------------------Montant total panier--------------------------------------
-//Déclaration de la variable pour pouvoir y mettre les prix qui sont présents dans le panier
-let prixTotalCalcul = [];
+//-----------------------------------Quantité et montant total panier--------------------------------------
+/* Si le tableau des produits n'est pas vide, on récupère la quantité totale et on calcule le montant total.
+   Sinon, on les définis à O */
+let quantityTotal
+let prixTotal
 
-// Aller chercher les prix dans le panier 
-for (let m = 0; m < tableauDesProduits.length; m++) {
-    let prixProduitPanier = parseInt(tableauDesProduits[m].price);
+if (tableauDesProduits === null || tableauDesProduits.length == 0) {
+    quantityTotal = 0;
+    prixTotal = 0;
+} else {
+    // Déclaration des variables pour pouvoir y mettre les quantités et prix qui sont présents dans le panier
+    let quantityTotalCalcul = [];
+    let prixTotalCalcul = [];
 
-    //Mettre les prix du panier dans la variable "prixTotalCalcul"
-    prixTotalCalcul.push(prixProduitPanier)
+    // Aller chercher les quantités et prix dans le panier 
+    for (let m = 0; m < tableauDesProduits.length; m++) {
+        let quantityProduitPanier = parseInt(tableauDesProduits[m].quantity);
+        let prixProduitPanier = parseInt(tableauDesProduits[m].price * quantityProduitPanier);
+
+        //Mettre les quantités et prix du panier dans les variables "quantityTotalCalcul" et "prixTotalCalcul"
+        quantityTotalCalcul.push(quantityProduitPanier);
+        prixTotalCalcul.push(prixProduitPanier);
+    }
+
+    /* Additionner les quantités et prix qu'il y a dans le tableau des variables "quantityTotalCalcul" et "prixTotalCalcul"
+       avec la methode .reduce */
+    function reducer(accumulator, currentValue) {
+        const parse = accumulator + currentValue
+        return parse;
+    }
+
+    quantityTotal = quantityTotalCalcul.reduce(reducer);
+    prixTotal = prixTotalCalcul.reduce(reducer);
 }
-
-//Additionner les prix qu'il y a dans le tableau de la variable "prixTotalCalcul" avec la methode .reduce
-//const reducer = parseInt(accumulator, currentValue) => accumulator + currentValue;
-function reducer(accumulator, currentValue) {
-    const parse = accumulator + currentValue
-    return parse;
-}
-let prixTotal = prixTotalCalcul.reduce(reducer);
-
 
 //Sélection de la classe ou je vais injecter le code html 
 const positionElement3 = document.querySelector(".cart__price");
@@ -91,13 +110,9 @@ const positionElement3 = document.querySelector(".cart__price");
 
 //Le code HTML du prix total à afficher 
 positionElement3.innerHTML = `
-<p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixTotal}</span> €</p>
+<p>Total (<span id="totalQuantity">${quantityTotal}</span> articles) : <span id="totalPrice">${prixTotal}</span> €</p>
 `;
 
-
-/*let affichagePrixDom = document.querySelector("#totalPrice");
-affichagePrixDom = prixTotal;
-console.log(affichagePrixDom);*/
 
 //--------------------------------Fin montant panier-----------------------------------------
 

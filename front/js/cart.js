@@ -2,45 +2,29 @@
 let tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
 
 //--------------------------L'AFFICHAGE DES PRODUITS DU PANIER-----------------------
-//Sélection de la classe ou je vais injecter le code html 
-const positionElement2 = document.querySelector("#cart__items");
-//console.log(positionElement2);
+//Mise à jour du HTML pour afficher les produits contenus dans le panier
+let structureProduits = document.querySelector("#cart__items");
+let panierVide = structureProduits.querySelector(".container-panier-vide");
+let structureProduit = structureProduits.querySelector(".cart__item");
 
 //si le panier est vide  : afficher le panier est vide
 if (tableauDesProduits === null || tableauDesProduits.length == 0) {
-    const panierVide = `
-    <div class"container-panier-vide">
-        <div> le panier est vide </div>
-    </div>`;
-    positionElement2.innerHTML = panierVide;
+    panierVide.style.display = "block";
 } else {
-    //Si le panier n'est pas vide : afficher ce qui a dans le panier
+    //Si le panier n'est pas vide : afficher ce qu'il y a dans le panier
     for (i = 0; i < tableauDesProduits.length; i++) {
-        positionElement2.innerHTML += `
-   <article class="cart__item" data-id="${tableauDesProduits[i].id}">
-   <div class="cart__item__img">
-     <img src="${tableauDesProduits[i].img}" alt="Photographie d'un canapé">
-   </div>
-   <div class="cart__item__content">
-     <div class="cart__item__content__titlePrice">
-       <h2>${tableauDesProduits[i].name} </h2>
-       <p> ${tableauDesProduits[i].price} € </p>
-     </div>
-     <div>
-        <p>Couleur : ${tableauDesProduits[i].colors}</p>
-     </div>
-     <div class="cart__item__content__settings">
-       <div class="cart__item__content__settings__quantity">
-         <p>Qté :  </p>
-         <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${tableauDesProduits[i].quantity}">
-       </div>
-       <div class="cart__item__content__settings__delete">
-         <p class="deleteItem">Supprimer</p>
-       </div>
-     </div>
-   </div>
- </article> 
-   `;
+        if (i > 0) {
+            structureProduits.append(structureProduit.cloneNode(true)); //cloneNode permet de reproduire le même contenu au lieu de le déplacer
+        }
+
+        structureProduits.lastElementChild.style.display = "flex";
+
+        structureProduits.lastElementChild.setAttribute("data-id", tableauDesProduits[i].id);
+        structureProduits.lastElementChild.querySelector(".cart__item__img img").setAttribute("src", tableauDesProduits[i].img);
+        structureProduits.lastElementChild.querySelector(".cart__item__content__titlePrice h2").textContent = tableauDesProduits[i].name;
+        structureProduits.lastElementChild.querySelector(".cart__item__content__titlePrice p").textContent = tableauDesProduits[i].price + " €";
+        structureProduits.lastElementChild.querySelector(".cart__item__content__color p").textContent = "Couleur : " + tableauDesProduits[i].colors;
+        structureProduits.lastElementChild.querySelector(".itemQuantity").setAttribute("value", tableauDesProduits[i].quantity);
     }
 }
 
@@ -104,15 +88,11 @@ if (tableauDesProduits === null || tableauDesProduits.length == 0) {
     prixTotal = prixTotalCalcul.reduce(reducer);
 }
 
-//Sélection de la classe ou je vais injecter le code html 
-const positionElement3 = document.querySelector(".cart__price");
+//Mise à jour du HTML pour afficher la quantité totale et le prix total 
+let totalPanier = document.querySelector(".cart__price");
 
-
-//Le code HTML du prix total à afficher 
-positionElement3.innerHTML = `
-<p>Total (<span id="totalQuantity">${quantityTotal}</span> articles) : <span id="totalPrice">${prixTotal}</span> €</p>
-`;
-
+totalPanier.querySelector("#totalQuantity").textContent = quantityTotal;
+totalPanier.querySelector("#totalPrice").textContent = prixTotal;
 
 //--------------------------------Fin montant panier-----------------------------------------
 

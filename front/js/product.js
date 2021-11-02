@@ -3,14 +3,6 @@ const chaineDeRequete_url_id = window.location.search;
 
 // Extraction uniquement de Id
 const id = chaineDeRequete_url_id.slice(4); // Enlève les 4 premiers caractères ===> ?id= 
-console.log(id);
-
-
-
-
-// Sélection de l'endroit ou injecter le code HTML
-const positionElement = document.querySelector("article");
-console.log(positionElement);
 
 var produit
     // On récupère la promesse des données du produit par son id 
@@ -20,46 +12,22 @@ promesse.then(async(response) => {
         // Conversion des données en json en mettant await pour attendre la réponse de la promesse
         produit = await response.json();
 
-        //la structure html pour l'affichage du produit sélectionné
-        let structureProduit = `
-              <div class="item__img"> 
-                <img src="${produit.imageUrl}" alt="${produit.altTxt}"> 
-              </div>
-              <div class="item__content">
+        //Mise à jour du HTML pour insérer les données du produit à afficher
+        let structureProduit = document.querySelector("article");
 
-              <div class="item__content__titlePrice">
-                <h1 id="title">${produit.name}</h1>
-                <p>Prix : <span id="price">${produit.price}</span>€</p>
-                <input type="hidden" value="${produit._id}" id="idProduit"/>
-              </div>
+        structureProduit.querySelector(".item__img img").setAttribute("src", produit.imageUrl);
+        structureProduit.querySelector(".item__img img").setAttribute("alt", produit.altTxt);
+        structureProduit.querySelector("#title").textContent = produit.name;
+        structureProduit.querySelector("#price").textContent = produit.price;
+        structureProduit.querySelector("#idProduit").setAttribute("value", produit._id);
+        structureProduit.querySelector("#description").textContent = produit.description;
 
-              <div class="item__content__description">
-                <p class="item__content__description__title">Description :</p>
-                <p id="description">${produit.description}</p>
-              </div>
-
-              <div class="item__content__settings">
-              <div class="item__content__settings__color">
-                <label for="color-select">Choisir une taille :</label>
-                <select name="color-select" id="colors">
-                  <option value="">--SVP, choisissez une couleur --</option>`
+        // Création de la liste des balises HTML "option" pour alimenter le "select"
+        let couleurs = ``;
         for (color of produit.colors) {
-            structureProduit += `<option value="${color}">${color}</option>`;
+            couleurs += `<option value="${color}">${color}</option>`;
         }
-        structureProduit += `</select>
-              </div>
-              <div class="item__content__settings__quantity">
-                  <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
-                </div>
-              </div>
-
-              <div class="item__content__addButton">
-                <button id="addToCart">Ajouter au panier</button>
-              </div>
-`;
-
-        positionElement.innerHTML = structureProduit;
+        structureProduit.querySelector('#colors').insertAdjacentHTML('beforeend', couleurs);
 
         ajoutEvent();
     })
@@ -101,7 +69,7 @@ function ajoutEvent() {
 
             //fonction d'apparition d'un popup 
             function popupConfirmation() {
-                if (confirm(`${produit.name} couleur: ${color} a bien eté ajouté au panier, pour consulter le panier 
+                if (confirm(`${produit.name} couleur: ${choixForm} a bien eté ajouté au panier, pour consulter le panier 
             appuyer sur OK ou sur ANNULER pour retourner a l'accueil.`)) {
                     window.location.href = "./cart.html";
                 } else {

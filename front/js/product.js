@@ -8,6 +8,8 @@ var produit
     // On récupère la promesse des données du produit par son id 
 const promesse = fetch("http://localhost:3000/api/products/" + `${id}`);
 // Une fois la promesse résolue, on travaille sur les valeurs récupérées
+
+
 promesse.then(async(response) => {
         // Conversion des données en json en mettant await pour attendre la réponse de la promesse
         produit = await response.json();
@@ -101,8 +103,6 @@ function ajoutEvent() {
             localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
             //Appel du PopUp
             popupConfirmation();
-
-            // ici il va devoir faire le popup de redirection soit au panier soit au menu principal
 
         } else {
             alert("La Quantité de produit doit etre strictement supérieur à zéro");

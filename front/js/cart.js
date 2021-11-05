@@ -53,46 +53,67 @@ for (let g = 0; g < btnSupprimer.length; g++) {
     })
 }
 
-//-----------------------------------Quantité et montant total panier--------------------------------------
-/* Si le tableau des produits n'est pas vide, on récupère la quantité totale et on calcule le montant total.
-   Sinon, on les définis à O */
-let quantityTotal
-let prixTotal
 
-if (tableauDesProduits === null || tableauDesProduits.length == 0) {
-    quantityTotal = 0;
-    prixTotal = 0;
-} else {
-    // Déclaration des variables pour pouvoir y mettre les quantités et prix qui sont présents dans le panier
-    let quantityTotalCalcul = [];
-    let prixTotalCalcul = [];
+let quantites = document.querySelectorAll(".itemQuantity");
+let prixTotalProduit = document.querySelectorAll(".cart__item__content__titlePrice p");
 
-    // Aller chercher les quantités et prix dans le panier 
-    for (let m = 0; m < tableauDesProduits.length; m++) {
-        let quantityProduitPanier = parseInt(tableauDesProduits[m].quantity);
-        let prixProduitPanier = parseInt(tableauDesProduits[m].price * quantityProduitPanier);
-
-        //Mettre les quantités et prix du panier dans les variables "quantityTotalCalcul" et "prixTotalCalcul"
-        quantityTotalCalcul.push(quantityProduitPanier);
-        prixTotalCalcul.push(prixProduitPanier);
-    }
-
-    /* Additionner les quantités et prix qu'il y a dans le tableau des variables "quantityTotalCalcul" et "prixTotalCalcul"
-       avec la methode .reduce */
-    function reducer(accumulator, currentValue) {
-        const parse = accumulator + currentValue
-        return parse;
-    }
-
-    quantityTotal = quantityTotalCalcul.reduce(reducer);
-    prixTotal = prixTotalCalcul.reduce(reducer);
+// Récupération du nombres d'articles/prix du panier
+for (let index = 0; index < quantites.length; index++) {
+    quantites[index].addEventListener("change", (event) => {
+        event.preventDefault();
+        let newQuantite = quantites[index].value;
+        tableauDesProduits[index].quantity = newQuantite;
+        localStorage.setItem("allProducts", JSON.stringify(tableauDesProduits));
+        prixTotalProduit[index].textContent = (newQuantite * parseInt(tableauDesProduits[index].price)) + " €";
+        tableauDesProduits = JSON.parse(localStorage.getItem("allProducts"));
+        afficherProduitTotal();
+    })
 }
+afficherProduitTotal();
 
-//Mise à jour du HTML pour afficher la quantité totale et le prix total 
-let totalPanier = document.querySelector(".cart__price");
+function afficherProduitTotal() {
 
-totalPanier.querySelector("#totalQuantity").textContent = quantityTotal;
-totalPanier.querySelector("#totalPrice").textContent = prixTotal;
+    //-----------------------------------Quantité et montant total panier--------------------------------------
+    /* Si le tableau des produits n'est pas vide, on récupère la quantité totale et on calcule le montant total.
+       Sinon, on les définis à O */
+    let quantityTotal
+    let prixTotal
+
+    if (tableauDesProduits === null || tableauDesProduits.length == 0) {
+        quantityTotal = 0;
+        prixTotal = 0;
+    } else {
+        // Déclaration des variables pour pouvoir y mettre les quantités et prix qui sont présents dans le panier
+        let quantityTotalCalcul = [];
+        let prixTotalCalcul = [];
+
+        // Aller chercher les quantités et prix dans le panier 
+        for (let m = 0; m < tableauDesProduits.length; m++) {
+            let quantityProduitPanier = parseInt(tableauDesProduits[m].quantity);
+            let prixProduitPanier = parseInt(tableauDesProduits[m].price * quantityProduitPanier);
+
+            //Mettre les quantités et prix du panier dans les variables "quantityTotalCalcul" et "prixTotalCalcul"
+            quantityTotalCalcul.push(quantityProduitPanier);
+            prixTotalCalcul.push(prixProduitPanier);
+        }
+
+        /* Additionner les quantités et prix qu'il y a dans le tableau des variables "quantityTotalCalcul" et "prixTotalCalcul"
+           avec la methode .reduce */
+        function reducer(accumulator, currentValue) {
+            const parse = accumulator + currentValue
+            return parse;
+        }
+
+        quantityTotal = quantityTotalCalcul.reduce(reducer);
+        prixTotal = prixTotalCalcul.reduce(reducer);
+    }
+
+    //Mise à jour du HTML pour afficher la quantité totale et le prix total 
+    let totalPanier = document.querySelector(".cart__price");
+
+    totalPanier.querySelector("#totalQuantity").textContent = quantityTotal;
+    totalPanier.querySelector("#totalPrice").textContent = prixTotal;
+};
 
 //--------------------------------Fin montant panier-----------------------------------------
 
